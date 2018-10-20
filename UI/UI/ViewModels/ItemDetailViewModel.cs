@@ -1,6 +1,4 @@
-﻿using System;
-
-using UI.Models;
+﻿using UI.Models;
 
 namespace UI.ViewModels
 {
