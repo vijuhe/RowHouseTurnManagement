@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UI.Models
+namespace UI.MobileAppService.Models
 {
     public interface IItemRepository
     {

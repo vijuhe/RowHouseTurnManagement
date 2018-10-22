@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-namespace UI.Models
+namespace UI.MobileAppService.Models
 {
     public class ItemRepository : IItemRepository
     {

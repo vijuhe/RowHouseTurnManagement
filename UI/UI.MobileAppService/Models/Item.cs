@@ -1,4 +1,4 @@
-﻿namespace UI.Models
+﻿namespace UI.MobileAppService.Models
 {
     public class Item
     {
