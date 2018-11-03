@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Affecto.Identifiers.Finnish;
 using Microsoft.AspNetCore.Mvc;
 using RowHouseTurnManagement.Application;
 using UI.MobileAppService.Models;
@@ -17,9 +19,9 @@ namespace UI.MobileAppService.Controllers
         }
 
         [HttpPost]
-        public Guid AddApartment(Apartment apartment)
+        public async Task<Guid> AddApartment([FromBody] Apartment apartment)
         {
-            return _registrationService.AddApartment(apartment.LastName, apartment.StreetAddress, apartment.PostalCode);
+            return await _registrationService.AddApartment(apartment.LastName, apartment.StreetAddress, PostalCode.Create(apartment.PostalCode.ToString()));
         }
     }
 }
