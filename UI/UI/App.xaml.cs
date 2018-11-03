@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using UI.Services;
 using UI.Views;
@@ -8,15 +9,16 @@ namespace UI
 {
     public partial class App : Application
     {
-        public static string AzureBackendUrl = "https://rowhouseturnmanagementapi.azurewebsites.net";
+        public static Uri BackendUrl = new Uri("https://rowhouseturnmanagementapi.azurewebsites.net/");
+        public static Guid BackendApiKey = Guid.Parse("CC685128-F9F9-484E-A324-047F5D2F95BE");
 
         public App()
         {
             InitializeComponent();
 
-            DependencyService.Register<AzureDataStore>();
+            DependencyService.Register<IRegistrationService, RegistrationService>();
 
-            MainPage = new MainPage();
+            MainPage = new Registration(new RegistrationService());
         }
 
         protected override void OnStart()
