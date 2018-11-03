@@ -14,8 +14,7 @@ namespace UI.Services
                 using (HttpResponseMessage response = await httpClient.PostAsJsonAsync("apartments", apartment))
                 {
                     response.EnsureSuccessStatusCode();
-                    string apartmentId = await response.Content.ReadAsStringAsync();
-                    return Guid.Parse(apartmentId);
+                    return await response.Content.ReadAsAsync<Guid>();
                 }
             }
         }
