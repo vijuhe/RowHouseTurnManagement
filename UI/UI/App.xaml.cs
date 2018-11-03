@@ -18,13 +18,18 @@ namespace UI
             InitializeComponent();
 
             DependencyService.Register<IRegistrationService, RegistrationService>();
-
-            MainPage = new Registration(new RegistrationService());
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            if (KeyValueStorage.HasApartment())
+            {
+                MainPage = new HomePage();
+            }
+            else
+            {
+                MainPage = new Registration(new RegistrationService());
+            }
         }
 
         protected override void OnSleep()

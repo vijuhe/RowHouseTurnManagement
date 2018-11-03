@@ -26,6 +26,7 @@ namespace UI.Views
 	            PostalCode = int.Parse(PostalCode.Text)
 	        };
 	        Guid apartmentId = await _registrationService.AddApartment(apartment);
-	    }
+            KeyValueStorage.SetApartmentId(apartmentId);
+        }
 	}
 }
