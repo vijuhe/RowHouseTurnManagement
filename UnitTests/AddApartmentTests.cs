@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Affecto.Identifiers.Finnish;
 using NSubstitute;
 using RowHouseTurnManagement.Application;
@@ -18,25 +19,25 @@ namespace RowHouseTurnManagement.UnitTests
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task ApartmentCannotBeAddedWithNullLastName()
+        public async Task ApartmentCannotBeAddedWithNullLastName()
         {
             await Assert.ThrowsAsync<ArgumentException>(() => _registrationService.AddApartment(null, "Street 1 A 12", PostalCode.Create("12345")));
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task ApartmentCannotBeAddedWithEmptyLastName()
+        public async Task ApartmentCannotBeAddedWithEmptyLastName()
         {
             await Assert.ThrowsAsync<ArgumentException>(() => _registrationService.AddApartment(string.Empty, "Street 1 A 12", PostalCode.Create("12345")));
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task ApartmentCannotBeAddedWithNullStreetAddress()
+        public async Task ApartmentCannotBeAddedWithNullStreetAddress()
         {
             await Assert.ThrowsAsync<ArgumentException>(() => _registrationService.AddApartment("Heikkinen", null, PostalCode.Create("12345")));
         }
 
         [Fact]
-        public async System.Threading.Tasks.Task ApartmentCannotBeAddedWithEmptyStreetAddress()
+        public async Task ApartmentCannotBeAddedWithEmptyStreetAddress()
         {
             await Assert.ThrowsAsync<ArgumentException>(() => _registrationService.AddApartment("Heikkinen", string.Empty, PostalCode.Create("12345")));
         }
@@ -47,11 +48,34 @@ namespace RowHouseTurnManagement.UnitTests
         [InlineData("Tampurinkatu 2 C as. 12", "Tampurinkatu 2 C", 12)]
         [InlineData("Tampurinkatu 2 C AS. 12", "Tampurinkatu 2 C", 12)]
         [InlineData("Tampurinkatu 2C12", "Tampurinkatu 2C", 12)]
-        public void ApartmentNumberIsSeparatedFromTheRestOfTheAddress(string streetAddress, string rowAddress, int apartmentNumber)
+        public async Task ApartmentNumberIsSeparatedFromTheRestOfTheAddress(string streetAddress, string rowAddress, int apartmentNumber)
         {
-            _registrationService.AddApartment("Heikkinen", streetAddress, PostalCode.Create("20780"));
+            await _registrationService.AddApartment("Heikkinen", streetAddress, PostalCode.Create("20780"));
 
-            _apartmentRepository.Received(1).AddApartment("Heikkinen", rowAddress, apartmentNumber, 20780);
+            _apartmentRepository.Received(1).AddApartment(20780, rowAddress, "Heikkinen", apartmentNumber);
+        }
+
+        [Fact]
+        public async Task RowHouseIsAddedIfItDoesNotExist()
+        {
+            const int postalCode = 20780;
+            const string rowAddress = "Tampereentie 1 A";
+
+            await _registrationService.AddApartment("Heikkinen", $"{rowAddress} 13", PostalCode.Create(postalCode.ToString()));
+
+            _apartmentRepository.Received(1).AddRowHouse(postalCode, rowAddress);
+        }
+
+        [Fact]
+        public async Task RowHouseIsNotAddedIfItDoesExist()
+        {
+            const int postalCode = 20780;
+            const string rowAddress = "Tampereentie 1 A";
+            _apartmentRepository.HasRowHouse(postalCode, rowAddress).Returns(true);
+
+            await _registrationService.AddApartment("Heikkinen", $"{rowAddress} 13", PostalCode.Create(postalCode.ToString()));
+
+            _apartmentRepository.DidNotReceive().AddRowHouse(Arg.Any<int>(), Arg.Any<string>());
         }
     }
 }

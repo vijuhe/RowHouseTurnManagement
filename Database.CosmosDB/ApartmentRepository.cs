@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -10,7 +11,7 @@ namespace RowHouseTurnManagement.DB.Cosmos
     public class ApartmentRepository : IApartmentRepository
     {
         private const string DatabaseId = "RowHouseTurnManagement";
-        private const string CollectionId = "Apartments";
+        private const string CollectionId = "RowHouses";
 
         private readonly string _authenticationKey;
         private readonly Uri _endpointUri;
@@ -21,22 +22,64 @@ namespace RowHouseTurnManagement.DB.Cosmos
             _authenticationKey = authenticationKey;
         }
 
-        public async Task<Guid> AddApartment(string lastName, string rowId, int apartmentNumber, int postalCode)
+        public async Task<Guid> AddApartment(int postalCode, string rowAddress, string lastName, int apartmentNumber)
         {
+            Guid apartmentId = Guid.NewGuid();
             var apartment = new Apartment
             {
-                PostalCode = postalCode,
+                Id = apartmentId,
                 LastName = lastName,
-                RowId = rowId,
                 ApartmentNumber = apartmentNumber
             };
             using (var documentClient = CreateDocumentClient())
             {
-                await EnsureCollectionIsCreated(documentClient);
-                ResourceResponse<Document> documentResponse = await documentClient
-                    .CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), apartment);
-                return Guid.Parse(documentResponse.Resource.Id);
+                Document document = GetRowHouse(documentClient, postalCode, rowAddress);
+                RowHouse rowHouse = RowHouse.LoadFrom(document);
+                rowHouse.AddApartment(apartment);
+                await documentClient.ReplaceDocumentAsync(rowHouse.Document);
             }
+            return apartmentId;
+        }
+
+        public async Task AddRowHouse(int postalCode, string address)
+        {
+            var rowHouse = new RowHouse(postalCode, address);
+            using (var documentClient = CreateDocumentClient())
+            {
+                await EnsureCollectionIsCreated(documentClient);
+                await documentClient.CreateDocumentAsync(CreateRowHouseCollectionUri(), rowHouse);
+            }
+        }
+
+        public async Task<bool> HasRowHouse(int postalCode, string address)
+        {
+            using (var documentClient = CreateDocumentClient())
+            {
+                await EnsureCollectionIsCreated(documentClient);
+                return GetRowHouses(documentClient, postalCode, address).AsEnumerable().Any();
+            }
+        }
+
+        private static string RemoveWhiteSpacesAndCapitalize(string address)
+        {
+            return address.Replace(" ", string.Empty).ToUpper();
+        }
+
+        private static Document GetRowHouse(DocumentClient documentClient, int postalCode, string rowAddress)
+        {
+            return GetRowHouses(documentClient, postalCode, rowAddress).AsEnumerable().Single();
+        }
+
+        private static IQueryable<dynamic> GetRowHouses(DocumentClient documentClient, int postalCode, string rowAddress)
+        {
+            string comparableAddress = RemoveWhiteSpacesAndCapitalize(rowAddress);
+            string sqlQuery = $"select * from c where c.PostalCode = {postalCode} and c.AddressKey = '{comparableAddress}'";
+            return documentClient.CreateDocumentQuery(CreateRowHouseCollectionUri(), sqlQuery);
+        }
+
+        private static Uri CreateRowHouseCollectionUri()
+        {
+            return UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
         }
 
         private async Task<DocumentCollection> EnsureCollectionIsCreated(IDocumentClient documentClient)

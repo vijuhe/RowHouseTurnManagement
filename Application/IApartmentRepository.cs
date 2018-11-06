@@ -7,6 +7,8 @@ namespace RowHouseTurnManagement.Application
 {
     public interface IApartmentRepository
     {
-        Task<Guid> AddApartment(string lastName, string rowId, int apartmentNumber, int postalCode);
+        Task<Guid> AddApartment(int postalCode, string rowAddress, string lastName, int apartmentNumber);
+        Task AddRowHouse(int postalCode, string address);
+        Task<bool> HasRowHouse(int postalCode, string address);
     }
 }

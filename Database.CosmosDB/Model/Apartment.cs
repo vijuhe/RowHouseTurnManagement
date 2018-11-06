@@ -4,9 +4,8 @@ namespace RowHouseTurnManagement.DB.Cosmos.Model
 {
     public class Apartment
     {
+        public Guid Id { get; set; }
         public string LastName { get; set; }
-        public string RowId { get; set; }
         public int ApartmentNumber { get; set; }
-        public int PostalCode { get; set; }
     }
 }

@@ -25,8 +25,13 @@ namespace RowHouseTurnManagement.Application
             }
 
             var rowHouseApartment = RowHouseApartment.Create(streetAddress);
-            return await _apartmentRepository.AddApartment(lastName, rowHouseApartment.RowAddress, rowHouseApartment.ApartmentNumber, 
-                int.Parse(postalCode.ToString()));
+            int postalCodeNumber = int.Parse(postalCode.ToString());
+            bool rowHouseCreated = await _apartmentRepository.HasRowHouse(postalCodeNumber, rowHouseApartment.RowAddress);
+            if (!rowHouseCreated)
+            {
+                await _apartmentRepository.AddRowHouse(postalCodeNumber, rowHouseApartment.RowAddress);
+            }
+            return await _apartmentRepository.AddApartment(postalCodeNumber, rowHouseApartment.RowAddress, lastName, rowHouseApartment.ApartmentNumber);
         }
     }
 }
