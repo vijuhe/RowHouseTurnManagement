@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Affecto.Identifiers.Finnish;
 
 namespace RowHouseTurnManagement.Application
 {
@@ -13,7 +12,7 @@ namespace RowHouseTurnManagement.Application
             _apartmentRepository = apartmentRepository;
         }
 
-        public async Task<Guid> AddApartment(string lastName, string streetAddress, PostalCode postalCode)
+        public async Task<Guid> AddApartment(string lastName, string streetAddress, int postalCode)
         {
             if (string.IsNullOrWhiteSpace(lastName))
             {
@@ -25,13 +24,12 @@ namespace RowHouseTurnManagement.Application
             }
 
             var rowHouseApartment = RowHouseApartment.Create(streetAddress);
-            int postalCodeNumber = int.Parse(postalCode.ToString());
-            bool rowHouseCreated = await _apartmentRepository.HasRowHouse(postalCodeNumber, rowHouseApartment.RowAddress);
+            bool rowHouseCreated = await _apartmentRepository.HasRowHouse(postalCode, rowHouseApartment.RowAddress);
             if (!rowHouseCreated)
             {
-                await _apartmentRepository.AddRowHouse(postalCodeNumber, rowHouseApartment.RowAddress);
+                await _apartmentRepository.AddRowHouse(postalCode, rowHouseApartment.RowAddress);
             }
-            return await _apartmentRepository.AddApartment(postalCodeNumber, rowHouseApartment.RowAddress, lastName, rowHouseApartment.ApartmentNumber);
+            return await _apartmentRepository.AddApartment(postalCode, rowHouseApartment.RowAddress, lastName, rowHouseApartment.ApartmentNumber);
         }
     }
 }
