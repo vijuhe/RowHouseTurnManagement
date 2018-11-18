@@ -22,14 +22,14 @@ namespace UI
 
         protected override void OnStart()
         {
-            if (KeyValueStorage.HasApartment())
-            {
-                MainPage = new HomePage();
-            }
-            else
-            {
-                MainPage = new Registration(new RegistrationService());
-            }
+            //if (KeyValueStorage.HasApartment())
+            //{
+            //    MainPage = new HomePage();
+            //}
+            //else
+            //{
+            MainPage = new Registration(new RegistrationService());
+            //}
         }
 
         protected override void OnSleep()

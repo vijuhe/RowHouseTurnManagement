@@ -30,6 +30,7 @@ namespace UI.MobileAppService
             services.AddMvc();
             services.AddTransient<IRegistrationService, RegistrationService>();
             services.AddTransient<IApartmentRepository>(CreateApartmentRepository);
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         public void ConfigureDevelopment(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -40,6 +41,7 @@ namespace UI.MobileAppService
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseMiddleware<ApiKeyValidator>();
             app.UseMvc();
         }
 
