@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using UI.MobileAppService.Models;
+using RowHouseTurnManagement.Application;
+using RowHouseTurnManagement.DB.Cosmos;
 
 namespace UI.MobileAppService
 {
@@ -26,16 +28,27 @@ namespace UI.MobileAppService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddSingleton<IItemRepository, ItemRepository>();
+            services.AddTransient<IRegistrationService, RegistrationService>();
+            services.AddTransient<IApartmentRepository>(CreateApartmentRepository);
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void ConfigureDevelopment(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddFile("Logs/RowHouseTurnManagement-{Date}.txt");
+            Configure(app, env, loggerFactory);
+        }
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
+            app.UseMiddleware<ApiKeyValidator>();
             app.UseMvc();
+        }
+
+        private ApartmentRepository CreateApartmentRepository(IServiceProvider serviceProvider)
+        {
+            IConfigurationSection cosmosDbConfig = Configuration.GetSection("CosmosDB");
+            return new ApartmentRepository(new Uri(cosmosDbConfig["EndpointUrl"]), cosmosDbConfig["AuthenticationKey"]);
         }
     }
 }

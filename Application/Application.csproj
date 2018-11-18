@@ -6,4 +6,8 @@
     <RootNamespace>RowHouseTurnManagement.Application</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Affecto.Identifiers.Finnish" Version="2.2.1" />
+  </ItemGroup>
+
 </Project>
