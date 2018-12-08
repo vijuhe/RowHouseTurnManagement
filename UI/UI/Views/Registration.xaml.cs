@@ -39,7 +39,28 @@ namespace UI.Views
 
         private void CheckFormValidity(object sender, TextChangedEventArgs e)
 	    {
-	        Register.IsEnabled = AllFieldsAreFilled() && PostalCodeIsValid();
+	        bool formValid = AllFieldsAreFilled() && StreetAddressIsValid() && PostalCodeIsValid();
+	        if (formValid)
+	        {
+	            ErrorMessage.Text = string.Empty;
+	        }
+	        else if (AllFieldsAreFilled())
+	        {
+	            if (!StreetAddressIsValid())
+	            {
+	                ErrorMessage.Text = "Katuosoitteen pitää päättyä asunnon numeroon.";
+	            }
+	            else if (!PostalCodeIsValid())
+	            {
+	                ErrorMessage.Text = "Postinumero muodostuu viidestä numerosta.";
+	            }
+	        }
+	        Register.IsEnabled = formValid;
+	    }
+
+	    private bool StreetAddressIsValid()
+	    {
+	        return Regex.IsMatch(StreetAddress.Text, @"\d+\s*$");
 	    }
 
 	    private bool PostalCodeIsValid()
