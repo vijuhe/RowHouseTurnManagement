@@ -50,7 +50,7 @@ namespace UI.Views
 	            {
 	                ErrorMessage.Text = "Katuosoitteen pitää päättyä asunnon numeroon.";
 	            }
-	            else if (!PostalCodeIsValid())
+	            else if (!PostalCodeIsValid() && PostalCode.Text.Length == PostalCode.MaxLength)
 	            {
 	                ErrorMessage.Text = "Postinumero muodostuu viidestä numerosta.";
 	            }
