@@ -9,8 +9,8 @@ namespace UI
 {
     public partial class App : Application
     {
-        //public static Uri BackendUrl = new Uri("https://rowhouseturnmanagementapi.azurewebsites.net/api/");
-        public static Uri BackendUrl = new Uri("http://localhost:5000/api/");
+        public static Uri BackendUrl = new Uri("https://rowhouseturnmanagementapi.azurewebsites.net/api/");
+        //public static Uri BackendUrl = new Uri("http://localhost:5000/api/");
         public static Guid BackendApiKey = Guid.Parse("CC685128-F9F9-484E-A324-047F5D2F95BE");
 
         public App()
@@ -22,14 +22,7 @@ namespace UI
 
         protected override void OnStart()
         {
-            //if (KeyValueStorage.HasApartment())
-            //{
-            //    MainPage = new HomePage();
-            //}
-            //else
-            //{
-            MainPage = new Registration(new RegistrationService());
-            //}
+            MainPage = new NavigationPage(new HomePage());
         }
 
         protected override void OnSleep()

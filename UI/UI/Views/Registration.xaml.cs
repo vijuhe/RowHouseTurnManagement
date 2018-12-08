@@ -26,16 +26,20 @@ namespace UI.Views
 	            StreetAddress = StreetAddress.Text,
 	            PostalCode = int.Parse(PostalCode.Text)
 	        };
-	        try
+	        Guid apartmentId;
+            try
             {
-                Guid apartmentId = await _registrationService.AddApartment(apartment);
-                KeyValueStorage.SetApartmentId(apartmentId);
+                apartmentId = await _registrationService.AddApartment(apartment);
             }
             catch (Exception)
             {
                 ErrorMessage.Text = "Rekisteröinti epäonnistui. Ota yhteyttä sovelluksen ylläpitoon.";
+                return;
             }
-        }
+
+            KeyValueStorage.SetApartmentId(apartmentId);
+	        await Navigation.PushModalAsync(new NewUserInfo(this));
+	    }
 
         private void CheckFormValidity(object sender, TextChangedEventArgs e)
 	    {
@@ -71,6 +75,24 @@ namespace UI.Views
 	    private bool AllFieldsAreFilled()
 	    {
 	        return LastName.Text?.Length > 0 && StreetAddress.Text?.Length > 0 && PostalCode.Text?.Length > 0;
+	    }
+
+	    private void MoveToStreetAddress(object sender, EventArgs e)
+	    {
+	        StreetAddress.Focus();
+	    }
+
+	    private void MoveToPostalCode(object sender, EventArgs e)
+	    {
+	        PostalCode.Focus();
+	    }
+
+	    private void TryAddRegistration(object sender, EventArgs e)
+	    {
+	        if (Register.IsEnabled)
+	        {
+                AddRegistration(sender, e);
+	        }
 	    }
 	}
 }
