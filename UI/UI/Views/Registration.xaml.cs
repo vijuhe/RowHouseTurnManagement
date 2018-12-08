@@ -26,16 +26,15 @@ namespace UI.Views
 	            StreetAddress = StreetAddress.Text,
 	            PostalCode = int.Parse(PostalCode.Text)
 	        };
-	        Guid apartmentId;
-            try
-	        {
-	            apartmentId = await _registrationService.AddApartment(apartment);
-	        }
+	        try
+            {
+                Guid apartmentId = await _registrationService.AddApartment(apartment);
+                KeyValueStorage.SetApartmentId(apartmentId);
+            }
             catch (Exception)
             {
                 ErrorMessage.Text = "Rekisteröinti epäonnistui. Ota yhteyttä sovelluksen ylläpitoon.";
             }
-	        KeyValueStorage.SetApartmentId(apartmentId);
         }
 
         private void CheckFormValidity(object sender, TextChangedEventArgs e)
