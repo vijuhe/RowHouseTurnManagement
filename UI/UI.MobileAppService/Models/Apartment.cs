@@ -8,7 +8,7 @@ namespace UI.MobileAppService.Models
         public string LastName { get; set; }
 
         [Required]
-        [RegularExpression(@"\d+\s*$", ErrorMessage = "Street address must end with numbers.")]
+        [RegularExpression(@"^.+\d+\s*$", ErrorMessage = "Street address must end with numbers.")]
         public string StreetAddress { get; set; }
 
         [Required]

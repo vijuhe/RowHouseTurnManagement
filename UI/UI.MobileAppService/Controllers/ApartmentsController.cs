@@ -18,9 +18,14 @@ namespace UI.MobileAppService.Controllers
         }
 
         [HttpPost]
-        public async Task<Guid> AddApartment([FromBody] Apartment apartment)
+        public async Task<IActionResult> AddApartment([FromBody] Apartment apartment)
         {
-            return await _registrationService.AddApartment(apartment.LastName, apartment.StreetAddress, apartment.PostalCode);
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestResult();
+            }
+            Guid apartmentId = await _registrationService.AddApartment(apartment.LastName, apartment.StreetAddress, apartment.PostalCode);
+            return Ok(apartmentId);
         }
     }
 }
