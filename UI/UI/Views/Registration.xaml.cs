@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using UI.Models;
 using UI.Services;
 using Xamarin.Forms;
@@ -28,5 +29,20 @@ namespace UI.Views
 	        Guid apartmentId = await _registrationService.AddApartment(apartment);
             KeyValueStorage.SetApartmentId(apartmentId);
         }
+
+	    private void CheckFormValidity(object sender, TextChangedEventArgs e)
+	    {
+	        Register.IsEnabled = AllFieldsAreFilled() && PostalCodeIsValid();
+	    }
+
+	    private bool PostalCodeIsValid()
+	    {
+	        return Regex.IsMatch(PostalCode.Text, @"\d{5}");
+	    }
+
+	    private bool AllFieldsAreFilled()
+	    {
+	        return LastName.Text?.Length > 0 && StreetAddress.Text?.Length > 0 && PostalCode.Text?.Length > 0;
+	    }
 	}
 }

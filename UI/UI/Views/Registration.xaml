@@ -5,10 +5,11 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
             <Label Text="Tervetuloa käyttämään rivitalojen vuoronhallintasovellusta!" Margin="0, 0, 0, 30" />
-            <Entry x:Name="LastName" Keyboard="Text" IsSpellCheckEnabled="False" Placeholder="Sukunimi" />
-            <Entry x:Name="StreetAddress" Keyboard="Text" IsSpellCheckEnabled="False" Placeholder="Katuosoite" />
-            <Entry x:Name="PostalCode" Keyboard="Numeric" IsSpellCheckEnabled="False" Placeholder="Postinumero" MaxLength="5" Margin="0, 0, 0, 30" />
-            <Button Text="Rekisteröidy" Clicked="AddRegistration"></Button>
+            <Entry x:Name="LastName" Keyboard="Text" IsSpellCheckEnabled="False" Placeholder="Sukunimi" TextChanged="CheckFormValidity" />
+            <Entry x:Name="StreetAddress" Keyboard="Text" IsSpellCheckEnabled="False" Placeholder="Katuosoite" TextChanged="CheckFormValidity" />
+            <Entry x:Name="PostalCode" Keyboard="Numeric" IsSpellCheckEnabled="False" Placeholder="Postinumero" MaxLength="5" Margin="0, 0, 0, 30" 
+                   TextChanged="CheckFormValidity" />
+            <Button x:Name="Register" Text="Rekisteröidy" Clicked="AddRegistration" IsEnabled="False"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
