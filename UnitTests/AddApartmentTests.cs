@@ -53,6 +53,7 @@ namespace RowHouseTurnManagement.UnitTests
         [InlineData("Tampurinkatu 2 C as. 12", "Tampurinkatu 2 C", 12)]
         [InlineData("Tampurinkatu 2 C AS. 12", "Tampurinkatu 2 C", 12)]
         [InlineData("Tampurinkatu 2C12", "Tampurinkatu 2C", 12)]
+        [InlineData("Tampurinkatu 2 C 12 ", "Tampurinkatu 2 C", 12)]
         public async Task ApartmentNumberIsSeparatedFromTheRestOfTheAddress(string streetAddress, string rowAddress, int apartmentNumber)
         {
             await _registrationService.AddApartment("Heikkinen", streetAddress, 20780);

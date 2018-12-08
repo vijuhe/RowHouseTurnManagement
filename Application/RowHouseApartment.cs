@@ -16,7 +16,7 @@ namespace RowHouseTurnManagement.Application
 
         public static RowHouseApartment Create(string streetAddress)
         {
-            Match match = Regex.Match(streetAddress, @"^(.+?)\s*(?:as\.?)?\s*(\d+)$", RegexOptions.IgnoreCase);
+            Match match = Regex.Match(streetAddress, @"^(.+?)\s*(?:as\.?)?\s*(\d+)\s*$", RegexOptions.IgnoreCase);
             if (match.Success)
             {
                 GroupCollection matchedGroups = match.Groups;
