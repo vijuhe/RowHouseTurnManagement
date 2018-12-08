@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RowHouseTurnManagement.Application
@@ -19,7 +17,12 @@ namespace RowHouseTurnManagement.Application
         public static RowHouseApartment Create(string streetAddress)
         {
             Match match = Regex.Match(streetAddress, @"^(.+?)\s*(?:as\.?)?\s*(\d+)$", RegexOptions.IgnoreCase);
-            return new RowHouseApartment(match.Groups[1].Value, int.Parse(match.Groups[2].Value));
+            if (match.Success)
+            {
+                GroupCollection matchedGroups = match.Groups;
+                return new RowHouseApartment(matchedGroups[1].Value, int.Parse(matchedGroups[2].Value));
+            }
+            throw new ArgumentException($"Couldn't separate apartment number from street address '{streetAddress}'.");
         }
     }
 }

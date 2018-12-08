@@ -41,6 +41,12 @@ namespace RowHouseTurnManagement.UnitTests
             await Assert.ThrowsAsync<ArgumentException>(() => _registrationService.AddApartment("Heikkinen", string.Empty, 12345));
         }
 
+        [Fact]
+        public async Task ApartmentCannotBeAddedWithStreetAddressWithoutApartmentNumber()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _registrationService.AddApartment("Heikkinen", "Tampurinkatu 2 C", 12345));
+        }
+
         [Theory]
         [InlineData("Tampurinkatu 2 C 12", "Tampurinkatu 2 C", 12)]
         [InlineData("Tampurinkatu 2 C as 12", "Tampurinkatu 2 C", 12)]
